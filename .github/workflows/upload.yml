@@ -11,12 +11,18 @@ jobs:
   upload:
     runs-on: ubuntu-latest
     steps:
+      - name: Set file name from URL
+        id: filename
+        run: |
+          FILENAME=$(basename "${{ github.event.inputs.file_url }}")
+          echo "FILENAME=$FILENAME" >> $GITHUB_ENV
+
       - name: Download file
         run: |
-          wget -O /tmp/file_to_upload "${{ github.event.inputs.file_url }}"
+          wget -O /tmp/${FILENAME} "${{ github.event.inputs.file_url }}"
 
-      - name: Upload to Nextcloud
+      - name: Upload to IUTBOX
         run: |
           curl -u ${{ secrets.IUTBOX_USER }}:${{ secrets.IUTBOX_PASS }} \
-          -T /tmp/file_to_upload \
-          "https://iutbox.iut.ac.ir/remote.php/dav/files/${{ secrets.IUTBOX_USER }}/$(basename /tmp/file_to_upload)"
+          -T /tmp/${FILENAME} \
+          "https://iutbox.iut.ac.ir/remote.php/dav/files/${{ secrets.IUTBOX_USER }}/${FILENAME}"
