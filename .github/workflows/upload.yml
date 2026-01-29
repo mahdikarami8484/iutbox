@@ -1,0 +1,22 @@
+name: Download and Upload to IUTBOX
+
+on:
+  workflow_dispatch:
+    inputs:
+      file_url:
+        description: 'File URL to download'
+        required: true
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download file
+        run: |
+          wget -O /tmp/file_to_upload "${{ github.event.inputs.file_url }}"
+
+      - name: Upload to Nextcloud
+        run: |
+          curl -u ${{ secrets.IUTBOX_USER }}:${{ secrets.IUTBOX_PASS }} \
+          -T /tmp/file_to_upload \
+          "https://iutbox.iut.ac.ir/remote.php/dav/files/${{ secrets.IUTBOX_USER }}/$(basename /tmp/file_to_upload)"
