@@ -1,4 +1,4 @@
-<img width="776" height="196" alt="image" src="https://github.com/user-attachments/assets/5c2bce82-17f9-495a-974d-f8bd2d223746" /># 🚀 آپلودر IUTBox
+# 🚀 آپلودر IUTBox
 
 <div align="center" dir="rtl">
 
