@@ -1,6 +1,6 @@
-<img width="987" height="53" alt="image" src="https://github.com/user-attachments/assets/64b499c1-5ad0-4650-8e98-46945924acaa" /># 🚀 آپلودر IUTBox
-
 <div align="center" dir="rtl">
+# 🚀 آپلودر IUTBox
+
 
 ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
