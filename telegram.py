@@ -1,191 +1,152 @@
-import re
-import requests
 import os
+import asyncio
+import re
+from telethon import TelegramClient
 
-BOT_TOKEN = os.getenv("BOT_TOKEN")
-CHAT_ID = int(os.getenv("CHAT_ID"))
-TELEGRAM_API_URL = f"https://api.telegram.org/bot{BOT_TOKEN}"
+# Load credentials from environment variables
+API_ID = int(os.getenv("TELEGRAM_API_ID"))
+API_HASH = os.getenv("TELEGRAM_API_HASH")
+PHONE = os.getenv("TELEGRAM_PHONE")
 
-USERNAME = os.getenv("USERNAME")
-PASS = os.getenv("PASS")
+USERNAME = os.getenv("IUTBOX_USERNAME")
+PASS = os.getenv("IUTBOX_PASSWORD")
 UPLOAD_URL = f"https://iutbox.iut.ac.ir/remote.php/dav/files/{USERNAME}/"
 
+# Create client
+client = TelegramClient('user_session', API_ID, API_HASH)
+
+TELEGRAM_LINK = os.getenv("TELEGRAM_LINK")
 
 def parse_telegram_link(link):
-    
-    m = re.search(r"t\.me/(c/)?([^/]+)/(\d+)", link)
-    if not m:
-        raise ValueError("Invalid link")
-
-    is_private = m.group(1)
-    chat = m.group(2)
-    message_id = int(m.group(3))
-
-    if is_private:
-        chat_id = "-100"+ chat
-    else:
-        chat_id = f"@{chat}"
-
-    return chat_id, message_id
-
-
-def get_last_update():
-    r = requests.get(
-    f"{TELEGRAM_API_URL}/getUpdates"
-    ).json()
-    return r
-
-
-def parse_update_get_file_id(update, allowed_chat_id):
     try:
-        message = update.get("message")
-        if not message:
-            raise ValueError("No message in update")
+        # Match patterns: t.me/username/123 or t.me/c/123456/123
+        m = re.search(r"t\.me/(c/)?([^/]+)/(\d+)", link)
+        if not m:
+            return None, None
         
-        # Check chat ID
-        chat_id = message.get("chat", {}).get("id")
-        if chat_id != allowed_chat_id:
-            raise ValueError(f"Chat ID {chat_id} not allowed. Expected: {allowed_chat_id}")
+        is_private = m.group(1)
+        chat = m.group(2)
+        message_id = int(m.group(3))
         
-        # Try to extract file ID from different message types
-        file_id = None
-        file_name = None
+        if is_private:
+            # Private channel: -100 + channel_id
+            chat_id = -100 * int(chat)
+        else:
+            # Public channel/group: @username
+            chat_id = chat
         
-        if "document" in message:
-            file_id = message["document"].get("file_id")
-            file_name = message["document"].get("file_name")
-        elif "photo" in message:
-            # Photos are arrays, get the last (highest quality) one
-            file_id = message["photo"][-1].get("file_id")
-        elif "audio" in message:
-            file_id = message["audio"].get("file_id")
-        elif "video" in message:
-            file_id = message["video"].get("file_id")
-        elif "voice" in message:
-            file_id = message["voice"].get("file_id")
-        elif "video_note" in message:
-            file_id = message["video_note"].get("file_id")
-        elif "animation" in message:
-            file_id = message["animation"].get("file_id")
-        
-        if not file_id:
-            raise ValueError("No file found in message")
-        
-        return file_id, file_name
-        
-    except KeyError as e:
-        raise ValueError(f"Invalid update structure: {e}")
-
-
-def download_file(file_id, file_name=None):
-    try:
-        # Get file info
-        r = requests.get(
-            f"{TELEGRAM_API_URL}/getFile",
-            params={"file_id": file_id}
-        ).json()
-
-        if not r.get("ok"):
-            raise ValueError("Failed to get file info")
-
-        file_path = r["result"]["file_path"]
-        file_size = r["result"].get("file_size", "Unknown")
-        
-        # Extract file name and extension from file_path
-        original_filename = file_path.split("/")[-1]
-        
-        # Use custom filename or original filename
-        save_as = file_name if file_name else original_filename
-        
-        # Get file type from extension
-        file_type = original_filename.split(".")[-1] if "." in original_filename else "unknown"
-        
-        # Download file
-        file_url = f"https://api.telegram.org/file/bot{BOT_TOKEN}/{file_path}"
-        data = requests.get(file_url).content
-
-        # Save file
-        with open(save_as, "wb") as f:
-            f.write(data)
-
-        print(f"✓ Downloaded: {save_as}")
-        print(f"  Original name: {original_filename}")
-        print(f"  File type: {file_type}")
-        print(f"  File size: {file_size} bytes")
-        
-        return save_as
-        
+        return chat_id, message_id
     except Exception as e:
-        print(f"Error downloading file: {e}")
-        return None
+        print(f"❌ Error parsing link: {e}")
+        return None, None
 
 
-def reset_updates():
+async def download_file_from_link(link):
+    """Download file from a Telegram message link"""
+    # Parse the link
+    chat_id, message_id = parse_telegram_link(link)
+    
+    if not chat_id or not message_id:
+        print("❌ Invalid Telegram link format")
+        return
+    
     try:
-        r = requests.get(
-            f"{TELEGRAM_API_URL}/getUpdates"
-        ).json()
+        print(f"📍 Chat: {chat_id}, Message: {message_id}")
         
-        updates = r.get("result", [])
+        # Get the message
+        message = await client.get_messages(chat_id, ids=message_id)
         
-        if not updates:
-            print("No updates to reset")
+        if not message:
+            print("❌ Message not found")
             return
         
-        last_update_id = updates[-1]["update_id"]
+        # Check if message has media
+        if not message.media:
+            print("❌ This message has no file/media to download")
+            return
         
-        # Set offset to skip all previous updates
-        r = requests.get(
-            f"https://api.telegram.org/bot{BOT_TOKEN}/getUpdates",
-            params={"offset": last_update_id + 1}
-        ).json()
+        # Extract file name
+        file_name = None
+        if message.document:
+            if message.document.attributes:
+                file_name = message.document.attributes[0].file_name
         
-        print(f"Updates reset. Last update ID was: {last_update_id}")
-        return True
+        print("⬇️  Downloading file...")
+        
+        # Download the file
+        file_path = await message.download_media(file_name=file_name)
+        
+        if not file_path:
+            print("❌ Failed to download file")
+            return
+        
+        print(f"✅ Downloaded: {file_path}")
+        
+        # Upload to IUTBox
+        await upload_to_iutbox(file_path)
         
     except Exception as e:
-        print(f"Error resetting updates: {e}")
-        return False
+        print(f"❌ Error: {e}")
 
-def upload_to_iutbox(file_path):
-    with open(file_path, "rb") as f:
-        file_data = f.read()
-    
-    filename = file_path.split("/")[-1]
-    
-    r = requests.put(
-        UPLOAD_URL + filename,
-        data=file_data,
-        auth=(USERNAME, PASS)
-    )
-    
-    if r.status_code in [200, 201, 204]:
-        print(f"✓ Uploaded to IUTBox: {filename}")
-        return True
-    else:
-        print(f"Error uploading to IUTBox: {r.status_code} - {r.text}")
-        return False
 
-def main():
-    updates = get_last_update()
-    allowed_chat_id = CHAT_ID
-    file_id = None
-    file_name = None
-    for update in updates.get("result", []):
+async def upload_to_iutbox(file_path):
+    """Upload file to IUTBox"""
+    try:
+        import requests
+        
+        if not os.path.exists(file_path):
+            print("❌ File not found")
+            return
+        
+        filename = os.path.basename(file_path)
+        
+        print(f"⬆️  Uploading to IUTBox: {filename}")
+        
+        with open(file_path, "rb") as f:
+            file_data = f.read()
+        
+        r = requests.put(
+            UPLOAD_URL + filename,
+            data=file_data,
+            auth=(USERNAME, PASS),
+            timeout=300
+        )
+        
+        if r.status_code in [200, 201, 204]:
+            print(f"✅ Uploaded to IUTBox: {filename}")
+        else:
+            print(f"❌ Upload failed: {r.status_code} - {r.text}")
+        
+        # Cleanup
         try:
-            file_id, file_name = parse_update_get_file_id(update, allowed_chat_id)
-            if file_id:
-                break
-        except ValueError as e:
-            print("Skipping update: ", e)
-    if not file_id:
-        print("No file found in recent updates.")
-        return 
+            os.remove(file_path)
+            print(f"🗑️  Cleaned up local file")
+        except:
+            pass
+            
+    except Exception as e:
+        print(f"❌ Upload error: {e}")
 
-    file_path = download_file(file_id, file_name)
-    print("File saved to: ", file_path)
-    reset_updates()
-    upload_to_iutbox(file_path)
+
+async def main():
+    """Main async function"""
+    # Connect to Telegram
+    await client.start(phone=PHONE)
+    print("✅ Connected to Telegram!\n")
+    
+    # Get message link from user
+    # link = input("📎 Enter Telegram message link: ").strip()
+    link = TELEGRAM_LINK
+    if not link:
+        print("❌ No link provided")
+        return
+    
+    # Download and upload
+    await download_file_from_link(link)
+
 
 if __name__ == "__main__":
-    main()
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        print("\n🛑 Stopped by user")
