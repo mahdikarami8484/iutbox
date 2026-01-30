@@ -2,20 +2,21 @@ import os
 import asyncio
 import re
 from telethon import TelegramClient
+from telethon.sessions import StringSession
 
 # Load credentials from environment variables
 API_ID = int(os.getenv("TELEGRAM_API_ID"))
 API_HASH = os.getenv("TELEGRAM_API_HASH")
 PHONE = os.getenv("TELEGRAM_PHONE")
+SESSION_STRING = os.getenv("TELEGRAM_SESSION_STRING")
 
 USERNAME = os.getenv("IUTBOX_USERNAME")
 PASS = os.getenv("IUTBOX_PASSWORD")
 UPLOAD_URL = f"https://iutbox.iut.ac.ir/remote.php/dav/files/{USERNAME}/"
 
 # Create client
-client = TelegramClient('user_session', API_ID, API_HASH)
+client = TelegramClient(StringSession(SESSION_STRING), API_ID, API_HASH)
 
-TELEGRAM_LINK = os.getenv("TELEGRAM_LINK")
 
 def parse_telegram_link(link):
     try:
@@ -135,8 +136,8 @@ async def main():
     print("✅ Connected to Telegram!\n")
     
     # Get message link from user
-    # link = input("📎 Enter Telegram message link: ").strip()
-    link = TELEGRAM_LINK
+    link = input("📎 Enter Telegram message link: ").strip()
+    
     if not link:
         print("❌ No link provided")
         return
