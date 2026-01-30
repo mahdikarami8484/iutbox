@@ -92,6 +92,7 @@
 <img width="829" height="323" alt="image" src="https://github.com/user-attachments/assets/5c6086a0-e02f-434f-81a5-ef043433deb1" />
 
 
+
 شما باید **دو Secret** ایجاد کنید:
 
 #### Secret اول: `IUTBOX_USER`
@@ -115,15 +116,25 @@
 مناسب برای دانلود فایل‌ها از لینک‌های مستقیم (Google Drive، Dropbox، سرورهای فایل و غیره)
 
 1. به تب **"Actions"** در ریپوزیتوری فورک شده خود **بروید**
+<img width="999" height="58" alt="اتب اکشن" src="https://github.com/user-attachments/assets/a59ed269-ea97-4d32-a163-5bd43f5ad133" />
+
 2. روی Workflow **"Direct download and Upload to IUTBOX"** (نوار کناری چپ) **کلیک کنید**
+<img width="341" height="182" alt="Direct download and Upload to IUTBOX Workflow" src="https://github.com/user-attachments/assets/85f6c162-621a-4877-ad60-bac8c66b5cec" />
+
 3. روی دکمه **"Run workflow"** (سمت راست) **کلیک کنید**
 4. **لینک دانلود مستقیم** را در فیلد "File URL to download" وارد کنید
    - مثال: `https://example.com/files/document.pdf`
 5. روی دکمه سبز **"Run workflow"** **کلیک کنید**
-6. **منتظر تکمیل شدن بمانید** (معمولاً 1 تا 5 دقیقه بسته به حجم فایل)
-7. **IUTBox خود را چک کنید** - فایل شما آنجاست! 🎉
+<img width="404" height="379" alt="run workflow" src="https://github.com/user-attachments/assets/11a66364-df4e-4b5a-89b9-359dc58413e3" />
 
-![اجرای Workflow](https://docs.github.com/assets/cb-32237/mw-1440/images/help/actions/workflow-dispatch-button.webp)
+6. **منتظر تکمیل شدن بمانید** (معمولاً 1 تا 5 دقیقه بسته به حجم فایل)
+<img width="1232" height="144" alt="image" src="https://github.com/user-attachments/assets/e599a146-bf06-4cda-9de3-dfd9b3aa3ed9" />
+
+
+7. **IUTBox خود را چک کنید** - فایل شما آنجاست! 🎉
+<img width="1229" height="104" alt="image" src="https://github.com/user-attachments/assets/2cd5a85f-1876-4d27-9fc1-5f299e7c018c" />
+
+
 
 ---
 
