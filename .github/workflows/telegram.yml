@@ -1,9 +1,7 @@
 name: Telegram Download and Upload
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   upload:
