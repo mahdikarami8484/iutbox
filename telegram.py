@@ -33,7 +33,7 @@ def parse_telegram_link(link):
         
         if is_private:
             # Private channel: -100 + channel_id
-            chat_id = -100 * int(chat)
+            chat_id = int("-100" + chat)
         else:
             # Public channel/group: @username
             chat_id = chat
