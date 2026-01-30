@@ -22,8 +22,8 @@ jobs:
 
       - name: Run script
         env:
-          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
-          CHAT_ID: ${{ secrets.CHAT_ID }}
-          USERNAME: ${{ secrets.USERNAME }}
-          PASS: ${{ secrets.PASS }}
+          BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          USERNAME: ${{ secrets.IUTBOX_USER }}
+          PASS: ${{ secrets.IUTBOX_PASS }}
         run: python telegram.py
