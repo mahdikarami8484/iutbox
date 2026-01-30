@@ -1,4 +1,4 @@
-# 🚀 آپلودر IUTBox
+<img width="987" height="53" alt="image" src="https://github.com/user-attachments/assets/64b499c1-5ad0-4650-8e98-46945924acaa" /># 🚀 آپلودر IUTBox
 
 <div align="center" dir="rtl">
 
@@ -82,9 +82,15 @@
 
 1. **به ریپوزیتوری فورک شده خود** در گیتهاب بروید
 2. روی تب **"Settings"** یا "تنظیمات" (نوار منوی بالا) کلیک کنید
-3. در نوار کناری سمت چپ، روی **"Secrets and variables"** کلیک کنید
-4. روی **"Actions"** کلیک کنید
-5. روی دکمه **"New repository secret"** کلیک کنید
+   <img width="987" height="53" alt="تب ستینگ" src="https://github.com/user-attachments/assets/5e77ee32-c23c-4d7a-9ccf-596553bebd05" />
+
+4. در نوار کناری سمت چپ، روی **"Secrets and variables"** کلیک کنید
+5. روی **"Actions"** کلیک کنید
+<img width="359" height="711" alt="تب اکشن" src="https://github.com/user-attachments/assets/cfe103b7-d5ba-4e14-acff-a2e992ff6e59" />
+
+7. روی دکمه **"New repository secret"** کلیک کنید
+<img width="829" height="323" alt="image" src="https://github.com/user-attachments/assets/5c6086a0-e02f-434f-81a5-ef043433deb1" />
+
 
 شما باید **دو Secret** ایجاد کنید:
 
@@ -97,8 +103,6 @@
 - **Name** (نام): `IUTBOX_PASS`
 - **Value** (مقدار): رمز نشستی که در مرحله 2 ایجاد کردید
 - روی **"Add secret"** کلیک کنید
-
-![محل GitHub Secrets](https://docs.github.com/assets/cb-58763/mw-1440/images/help/settings/actions-secrets-new.webp)
 
 > 🔒 **نکته امنیتی**: GitHub Secrets رمزنگاری شده هستند و پس از ایجاد قابل مشاهده نیستند. آن‌ها فقط در حین اجرای Workflow قابل دسترسی هستند.
 
