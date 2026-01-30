@@ -10,7 +10,7 @@
 
 **آپلود فایل‌های خود به IUTBox را با سرعت باورنکردنی GitHub Actions تجربه کنید! ⚡**
 
-فارسی | [English](README.md)
+فارسی | [English](README-ENG.md)
 
 </div>
 
