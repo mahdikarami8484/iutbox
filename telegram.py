@@ -14,6 +14,8 @@ USERNAME = os.getenv("IUTBOX_USERNAME")
 PASS = os.getenv("IUTBOX_PASSWORD")
 UPLOAD_URL = f"https://iutbox.iut.ac.ir/remote.php/dav/files/{USERNAME}/"
 
+TELEGRAM_LINK = os.getenv("TELEGRAM_LINK")
+
 # Create client
 client = TelegramClient(StringSession(SESSION_STRING), API_ID, API_HASH)
 
@@ -136,7 +138,7 @@ async def main():
     print("✅ Connected to Telegram!\n")
     
     # Get message link from user
-    link = input("📎 Enter Telegram message link: ").strip()
+    link = TELEGRAM_LINK
     
     if not link:
         print("❌ No link provided")
