@@ -1,4 +1,4 @@
-name: Download and Upload to IUTBOX
+name: Direct download and Upload to IUTBOX
 
 on:
   workflow_dispatch:
