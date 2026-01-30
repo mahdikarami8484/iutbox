@@ -55,8 +55,7 @@
 1. روی دکمه **"Fork"** در گوشه بالا سمت راست این صفحه کلیک کنید
 2. چند ثانیه صبر کنید تا گیتهاب فورک شما را ایجاد کند
 3. به ریپوزیتوری فورک شده خود منتقل می‌شوید: `https://github.com/YOUR_USERNAME/iutbox`
-
-<img width="776" height="196" alt="محل دکمه فورک" src="https://github.com/user-attachments/assets/6b322ab8-eb99-42b8-b2c8-3c616ad39571" />
+![دکمه فورک](https://github.com/user-attachments/assets/6b322ab8-eb99-42b8-b2c8-3c616ad39571)
 
 
 ---
