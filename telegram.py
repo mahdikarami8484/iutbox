@@ -3,6 +3,7 @@ import asyncio
 import re
 from telethon import TelegramClient
 from telethon.sessions import StringSession
+from telethon.tl.types import DocumentAttributeFilename
 
 # Load credentials from environment variables
 API_ID = int(os.getenv("TELEGRAM_API_ID"))
@@ -71,13 +72,15 @@ async def download_file_from_link(link):
         # Extract file name
         file_name = None
         if message.document:
-            if message.document.attributes:
-                file_name = message.document.attributes[0].file_name
+            for attr in message.document.attributes:
+                if isinstance(attr, DocumentAttributeFilename):
+                    file_name = attr.file_name
+                break
         
         print("⬇️  Downloading file...")
         
         # Download the file
-        file_path = await message.download_media(file_name=file_name)
+        file_path = await message.download_media(file=file_name)
         
         if not file_path:
             print("❌ Failed to download file")
